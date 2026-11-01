@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#03131b" />
+<title>تذكّر — الأذكار والمواقيت</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕌</text></svg>" />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#03131b" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="تذكّر" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="style.css?v=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="notch" aria-hidden="true"></div>
+
+    <div class="statusbar">
+      <span id="sbTime">--:--</span>
+      <span class="sb-icons">📶&nbsp;&nbsp;🔋</span>
+    </div>
+
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🕌</div>
+        <div class="brand-txt">
+          <h1>تذكّر</h1>
+          <p>مواقيت الصلاة وأذكار اليوم</p>
+        </div>
+      </div>
+      <div class="dates">
+        <div id="hijri" class="hijri">—</div>
+        <div id="greg" class="greg">—</div>
+      </div>
+      <div class="clock" id="clock">--:--:--</div>
+    </header>
+
+    <main>
+      <section class="view active" id="view-home">
+        <div class="card next-card">
+          <p class="label">الصلاة القادمة</p>
+          <h2 id="nextName">—</h2>
+          <div class="countdown" id="countdown">--:--:--</div>
+          <p id="nextTime" class="at">—</p>
+          <p class="hint">الأذكار ما بعد الصلاة تبدأ فور دخول وقت الصلاة القادمة</p>
+        </div>
+        <div class="card adhkar-card" id="adhkarCard">
+          <p class="label">أذكار ما بعد الصلاة</p>
+          <ul class="adhkar-list" id="postList"></ul>
+          <div class="progress-row">
+            <span id="postProgress">0 / 8</span>
+            <button class="btn-ghost" id="resetPost">إعادة تعيين</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-morning">
+        <div class="card">
+          <p class="label">أذكار الصباح</p>
+          <ul class="adhkar-list" id="morningList"></ul>
+          <div class="progress-row">
+            <span id="morningProgress">0 / 7</span>
+            <button class="btn-ghost" id="resetMorning">إعادة تعيين</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-daily">
+        <div class="card">
+          <p class="label">أذكار يومية (تسبيح واستغفار)</p>
+          <ul class="adhkar-list" id="dailyList"></ul>
+          <div class="progress-row">
+            <span id="dailyProgress">0 / 7</span>
+            <button class="btn-ghost" id="resetDaily">إعادة تعيين</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="card">
+          <h3>الإعدادات</h3>
+          <label class="toggle">
+            <input type="checkbox" id="settingSound" />
+            <span class="slider"></span>
+            <span>صوت التنبيه عند الصلاة</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="settingVibrate" />
+            <span class="slider"></span>
+            <span>اهتزاز الهاتف</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="settingHijriAdj" />
+            <span class="slider"></span>
+            <span>تصحيح التاريخ الهجري ±1 يوم</span>
+          </label>
+          <div class="setting-row">
+            <span>موقع المدينة</span>
+            <select id="settingCity">
+              <option value="alger">الجزائر العاصمة</option>
+              <option value="oran">وهران</option>
+              <option value="constantine">قسنطينة</option>
+              <option value="annaba">عنابة</option>
+              <option value="blida">البليدة</option>
+              <option value="setif">سطيف</option>
+              <option value="tizi">تيزي وزو</option>
+              <option value="other">أخرى (يدوي)</option>
+            </select>
+          </div>
+          <button class="btn-primary" id="saveSettings">حفظ الإعدادات</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <button class="tab active" data-view="home" aria-label="الرئيسية">
+        <span class="icon">🏠</span>
+        <span>الرئيسية</span>
+      </button>
+      <button class="tab" data-view="morning" aria-label="أذكار الصباح">
+        <span class="icon">🌅</span>
+        <span>الصباح</span>
+      </button>
+      <button class="tab" data-view="daily" aria-label="أذكار يومية">
+        <span class="icon">📿</span>
+        <span>يومية</span>
+      </button>
+      <button class="tab" data-view="settings" aria-label="الإعدادات">
+        <span class="icon">⚙️</span>
+        <span>إعدادات</span>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<script src="script.js?v=1"></script>
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          console.log('SW registered:', reg.scope);
+          // Check for updates periodically
+          setInterval(() => reg.update(), 60 * 60 * 1000);
+        })
+        .catch(err => console.log('SW registration failed:', err));
+    });
+  }
+
+  // PWA Install Prompt
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBanner();
+  });
+
+  function showInstallBanner() {
+    if (document.getElementById('installBanner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'installBanner';
+    banner.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:linear-gradient(135deg,#d9b45a,#b08c3f);color:#03131b;border-radius:12px;margin:0 16px 16px;box-shadow:0 4px 20px rgba(217,180,90,.4);animation:slideUp .3s ease">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:24px">📲</span>
+          <div>
+            <strong style="font-size:14px">تثبيت التطبيق</strong>
+            <div style="font-size:12px;opacity:.8">يعمل بدون إنترنت، تنبيهات الصلاة في الخلفية</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="btnInstall" style="background:#03131b;color:#d9b45a;border:none;padding:8px 16px;border-radius:8px;font-weight:700;font-size:13px">تثبيت</button>
+          <button id="btnDismiss" style="background:transparent;color:#03131b;border:1px solid #03131b;padding:8px 12px;border-radius:8px;font-size:13px">لاحقاً</button>
+        </div>
+      </div>
+      <style>@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}</style>
+    `;
+    document.querySelector('main').prepend(banner);
+    banner.querySelector('#btnInstall').onclick = () => installApp();
+    banner.querySelector('#btnDismiss').onclick = () => banner.remove();
+  }
+
+  async function installApp() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') console.log('PWA installed');
+    deferredPrompt = null;
+    document.getElementById('installBanner')?.remove();
+  }
+
+  // Detect standalone mode
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    document.body.classList.add('pwa-standalone');
+  }
+</script>
+</body>
+</html>
