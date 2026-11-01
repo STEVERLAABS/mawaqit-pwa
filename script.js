@@ -78,8 +78,84 @@ const DEFAULTS = {
   vibrate: true,
   hijriAdj: 0,
   adhanVolume: 0.7,
-  fajrAdhanType: 'mecca', // mecca, medina, egypt, local
-  keepScreenOn: false
+  fajrAdhanType: 'mecca',
+  keepScreenOn: false,
+  theme: 'dark',
+  language: 'ar',
+  statsEnabled: true
+};
+
+/* ---------- مدن عالمية إضافية ---------- */
+const WORLD_CITIES = {
+  // السعودية
+  makkah:     { lat: 21.3891, lng: 39.8579, tz: 3, name: 'مكة المكرمة', fajrAngle: 18.5, ishaAngle: 17 },
+  madinah:    { lat: 24.5247, lng: 39.5692, tz: 3, name: 'المدينة المنورة', fajrAngle: 18.5, ishaAngle: 17 },
+  riyadh:     { lat: 24.7136, lng: 46.6753, tz: 3, name: 'الرياض', fajrAngle: 18.5, ishaAngle: 17 },
+  jeddah:     { lat: 21.4858, lng: 39.1925, tz: 3, name: 'جدة', fajrAngle: 18.5, ishaAngle: 17 },
+  // مصر
+  cairo:      { lat: 30.0444, lng: 31.2357, tz: 2, name: 'القاهرة', fajrAngle: 19.5, ishaAngle: 17.5 },
+  alexandria: { lat: 31.2001, lng: 29.9187, tz: 2, name: 'الإسكندرية', fajrAngle: 19.5, ishaAngle: 17.5 },
+  // المغرب
+  casablanca: { lat: 33.5731, lng: -7.5898, tz: 1, name: 'الدار البيضاء', fajrAngle: 18, ishaAngle: 17 },
+  rabat:      { lat: 34.0209, lng: -6.8416, tz: 1, name: 'الرباط', fajrAngle: 18, ishaAngle: 17 },
+  // تونس
+  tunis:      { lat: 36.8065, lng: 10.1815, tz: 1, name: 'تونس', fajrAngle: 18, ishaAngle: 17 },
+  // الإمارات
+  dubai:      { lat: 25.2048, lng: 55.2708, tz: 4, name: 'دبي', fajrAngle: 18.5, ishaAngle: 17 },
+  abudhabi:   { lat: 24.4539, lng: 54.3773, tz: 4, name: 'أبوظبي', fajrAngle: 18.5, ishaAngle: 17 },
+  // قطر
+  doha:       { lat: 25.2854, lng: 51.5310, tz: 3, name: 'الدوحة', fajrAngle: 18.5, ishaAngle: 17 },
+  // الكويت
+  kuwait:     { lat: 29.3759, lng: 47.9774, tz: 3, name: 'الكويت', fajrAngle: 18.5, ishaAngle: 17 },
+  // البحرين
+  manama:     { lat: 26.2235, lng: 50.5876, tz: 3, name: 'المنامة', fajrAngle: 18.5, ishaAngle: 17 },
+  // عمان
+  muscat:     { lat: 23.5880, lng: 58.3829, tz: 4, name: 'مسقط', fajrAngle: 18.5, ishaAngle: 17 },
+  // الأردن
+  amman:      { lat: 31.9454, lng: 35.9284, tz: 2, name: 'عمان', fajrAngle: 18, ishaAngle: 17 },
+  // لبنان
+  beirut:     { lat: 33.8938, lng: 35.5018, tz: 2, name: 'بيروت', fajrAngle: 18, ishaAngle: 17 },
+  // فلسطين
+  jerusalem:  { lat: 31.7683, lng: 35.2137, tz: 2, name: 'القدس', fajrAngle: 18, ishaAngle: 17 },
+  // العراق
+  baghdad:    { lat: 33.3152, lng: 44.3661, tz: 3, name: 'بغداد', fajrAngle: 18, ishaAngle: 17 },
+  // سوريا
+  damascus:   { lat: 33.5138, lng: 36.2765, tz: 2, name: 'دمشق', fajrAngle: 18, ishaAngle: 17 },
+  // ليبيا
+  tripoli:    { lat: 32.8872, lng: 13.1913, tz: 2, name: 'طرابلس', fajrAngle: 18, ishaAngle: 17 },
+  // السودان
+  khartoum:   { lat: 15.5007, lng: 32.5599, tz: 2, name: 'الخرطوم', fajrAngle: 18, ishaAngle: 17 },
+  // فرنسا
+  paris:      { lat: 48.8566, lng: 2.3522, tz: 1, name: 'باريس', fajrAngle: 12, ishaAngle: 12 },
+  lyon:       { lat: 45.7640, lng: 4.8357, tz: 1, name: 'ليون', fajrAngle: 12, ishaAngle: 12 },
+  marseille:  { lat: 43.2965, lng: 5.3698, tz: 1, name: 'مرسيليا', fajrAngle: 12, ishaAngle: 12 },
+  // بريطانيا
+  london:     { lat: 51.5074, lng: -0.1278, tz: 0, name: 'لندن', fajrAngle: 12, ishaAngle: 12 },
+  birmingham: { lat: 52.4862, lng: -1.8904, tz: 0, name: 'برمنغهام', fajrAngle: 12, ishaAngle: 12 },
+  // أمريكا
+  newyork:    { lat: 40.7128, lng: -74.0060, tz: -5, name: 'نيويورك', fajrAngle: 12, ishaAngle: 12 },
+  washington: { lat: 38.9072, lng: -77.0369, tz: -5, name: 'واشنطن', fajrAngle: 12, ishaAngle: 12 },
+  chicago:    { lat: 41.8781, lng: -87.6298, tz: -6, name: 'شيكاغو', fajrAngle: 12, ishaAngle: 12 },
+  losangeles: { lat: 34.0522, lng: -118.2437, tz: -8, name: 'لوس أنجلوس', fajrAngle: 12, ishaAngle: 12 },
+  toronto:    { lat: 43.6532, lng: -79.3832, tz: -5, name: 'تورنتو', fajrAngle: 12, ishaAngle: 12 },
+  montreal:   { lat: 45.5017, lng: -73.5673, tz: -5, name: 'مونتريال', fajrAngle: 12, ishaAngle: 12 },
+  // ألمانيا
+  berlin:     { lat: 52.5200, lng: 13.4050, tz: 1, name: 'برلين', fajrAngle: 12, ishaAngle: 12 },
+  frankfurt:  { lat: 50.1109, lng: 8.6821, tz: 1, name: 'فرانكفورت', fajrAngle: 12, ishaAngle: 12 },
+  // تركيا
+  istanbul:   { lat: 41.0082, lng: 28.9784, tz: 3, name: 'إسطنبول', fajrAngle: 18, ishaAngle: 17 },
+  ankara:     { lat: 39.9334, lng: 32.8597, tz: 3, name: 'أنقرة', fajrAngle: 18, ishaAngle: 17 },
+  // ماليزيا
+  kualalumpur:{ lat: 3.1390, lng: 101.6869, tz: 8, name: 'كوالالمبور', fajrAngle: 18, ishaAngle: 17 },
+  // إندونيسيا
+  jakarta:    { lat: -6.2088, lng: 106.8456, tz: 7, name: 'جاكرتا', fajrAngle: 18, ishaAngle: 17 },
+  // باكستان
+  karachi:    { lat: 24.8607, lng: 67.0011, tz: 5, name: 'كراتشي', fajrAngle: 18, ishaAngle: 17 },
+  // بنغلاديش
+  dhaka:      { lat: 23.8103, lng: 90.4125, tz: 6, name: 'دكا', fajrAngle: 18, ishaAngle: 17 },
+  // भारत
+  mumbai:     { lat: 19.0760, lng: 72.8777, tz: 5.5, name: 'مومباي', fajrAngle: 18, ishaAngle: 17 },
+  delhi:      { lat: 28.7041, lng: 77.1025, tz: 5.5, name: 'دلهي', fajrAngle: 18, ishaAngle: 17 },
 };
 
 const PRAYERS_ORDER = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -778,5 +854,481 @@ function restoreScrollPosition() {
     setTimeout(() => { document.querySelector('main')?.scrollTop = saved.scrollTop || 0; }, 100);
   } catch (e) {}
 }
+
+/* =========================================================
+   ميزات إضافية: القبلة، الإحصائيات، النسخ الاحتياطي، المشاركة
+   ========================================================= */
+
+/* ---------- بوصلة القبلة ---------- */
+let qiblaWatchId = null;
+let qiblaHeading = 0;
+
+function calculateQibla(lat, lng) {
+  // إحداثيات الكعبة
+  const kaabaLat = 21.4225;
+  const kaabaLng = 39.8262;
+  
+  const dLng = deg(kaabaLng - lng);
+  const lat1 = deg(lat);
+  const lat2 = deg(kaabaLat);
+  
+  const y = Math.sin(dLng) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  let bearing = rad(Math.atan2(y, x));
+  bearing = (bearing + 360) % 360;
+  return bearing;
+}
+
+function startQiblaCompass() {
+  if (!('DeviceOrientationEvent' in window)) {
+    showToast('جهازك لا يدعم البوصلة');
+    return;
+  }
+  
+  if (qiblaWatchId) return; // يعمل بالفعل
+  
+  const city = CITIES[state.cityKey] || WORLD_CITIES[state.cityKey];
+  if (!city) return;
+  
+  const qiblaAngle = calculateQibla(city.lat, city.lng);
+  
+  // إنشاء واجهة البوصلة
+  createQiblaUI(qiblaAngle);
+  
+  function handleOrientation(e) {
+    let heading = e.webkitCompassHeading || e.alpha;
+    if (heading === null) return;
+    
+    // تحويل للاتجاه الصحيح
+    if (e.webkitCompassHeading !== undefined) {
+      heading = e.webkitCompassHeading;
+    } else {
+      heading = 360 - e.alpha;
+    }
+    
+    qiblaHeading = heading;
+    updateQiblaNeedle(heading, qiblaAngle);
+  }
+  
+  if (DeviceOrientationEvent.requestPermission) {
+    // iOS 13+
+    DeviceOrientationEvent.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation);
+        qiblaWatchId = 'active';
+      }
+    }).catch(() => showToast('يرجى السماح بالبوصلة من الإعدادات'));
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+    qiblaWatchId = 'active';
+  }
+}
+
+function stopQiblaCompass() {
+  if (qiblaWatchId) {
+    window.removeEventListener('deviceorientation', handleOrientation);
+    qiblaWatchId = null;
+  }
+}
+
+function createQiblaUI(qiblaAngle) {
+  if ($('qiblaModal')) return;
+  
+  const modal = document.createElement('div');
+  modal.id = 'qiblaModal';
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal qibla-modal">
+      <div class="modal-handle"></div>
+      <h3>🧭 اتجاه القبلة</h3>
+      <p class="qibla-city">موقعك: ${CITIES[state.cityKey]?.name || WORLD_CITIES[state.cityKey]?.name || 'غير محدد'}</p>
+      <p class="qibla-angle">الاتجاه: ${Math.round(qiblaAngle)}° من الشمال</p>
+      
+      <div class="compass-container">
+        <div class="compass" id="compass">
+          <div class="compass-ring"></div>
+          <div class="compass-marks">
+            ${[0,45,90,135,180,225,270,315].map(a => 
+              `<div class="mark" style="transform:rotate(${a}deg)"><span>${a===0?'ش':a===90?'ش':a===180?'ج':a===270?'غ':''}</span></div>`
+            ).join('')}
+          </div>
+          <div class="compass-needle" id="compassNeedle"></div>
+          <div class="qibla-indicator" id="qiblaIndicator" style="transform:rotate(${qiblaAngle}deg)">
+            <svg viewBox="0 0 24 24" width="28" height="28"><path fill="#d9b45a" d="M12 2L2 22h20L12 2z"/></svg>
+            <span>القبلة</span>
+          </div>
+          <div class="compass-center"></div>
+        </div>
+        <div class="compass-info">
+          <div class="info-row">
+            <span>جهازك</span>
+            <strong id="deviceHeading">--°</strong>
+          </div>
+          <div class="info-row">
+            <span>القبلة</span>
+            <strong>${Math.round(qiblaAngle)}°</strong>
+          </div>
+          <div class="info-row diff">
+            <span>الفرق</span>
+            <strong id="headingDiff">--°</strong>
+          </div>
+        </div>
+      </div>
+      
+      <button class="btn-primary" onclick="closeQibla()">إغلاق</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  // أنيميشن الدخول
+  requestAnimationFrame(() => modal.classList.add('show'));
+}
+
+function updateQiblaNeedle(deviceHeading, qiblaAngle) {
+  const needle = $('compassNeedle');
+  const indicator = $('qiblaIndicator');
+  const deviceEl = $('deviceHeading');
+  const diffEl = $('headingDiff');
+  
+  if (needle) needle.style.transform = `rotate(${-deviceHeading}deg)`;
+  if (indicator) indicator.style.transform = `rotate(${qiblaAngle - deviceHeading}deg)`;
+  if (deviceEl) deviceEl.textContent = Math.round(deviceHeading) + '°';
+  
+  const diff = Math.abs(((deviceHeading - qiblaAngle + 180) % 360) - 180);
+  if (diffEl) {
+    diffEl.textContent = Math.round(diff) + '°';
+    diffEl.style.color = diff < 5 ? 'var(--mint)' : diff < 15 ? 'var(--gold)' : 'var(--white)';
+  }
+  
+  // اهتزاز عند الاستقامة
+  if (diff < 2 && state.vibrate) {
+    navigator.vibrate(50);
+  }
+}
+
+function closeQibla() {
+  const modal = $('qiblaModal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(() => modal.remove(), 300);
+  }
+  stopQiblaCompass();
+}
+
+/* ---------- الإحصائيات ---------- */
+function getStats() {
+  const stats = JSON.parse(localStorage.getItem('mawaqit_stats') || '{}');
+  return {
+    totalPrayers: stats.totalPrayers || 0,
+    totalAdhkar: stats.totalAdhkar || 0,
+    streak: stats.streak || 0,
+    lastPrayerDate: stats.lastPrayerDate || null,
+    dailyStats: stats.dailyStats || {},
+    monthlyStats: stats.monthlyStats || {},
+    completedPrayers: stats.completedPrayers || { fajr:0, dhuhr:0, asr:0, maghrib:0, isha:0 }
+  };
+}
+
+function saveStats(stats) {
+  localStorage.setItem('mawaqit_stats', JSON.stringify(stats));
+}
+
+function recordPrayer(prayerKey) {
+  if (!state.statsEnabled) return;
+  const stats = getStats();
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (!stats.dailyStats[today]) {
+    stats.dailyStats[today] = { prayers: 0, adhkar: 0, completed: [] };
+  }
+  if (!stats.dailyStats[today].completed.includes(prayerKey)) {
+    stats.dailyStats[today].completed.push(prayerKey);
+    stats.dailyStats[today].prayers++;
+    stats.totalPrayers++;
+    stats.completedPrayers[prayerKey] = (stats.completedPrayers[prayerKey] || 0) + 1;
+    
+    // تحديث السلسلة
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    if (stats.lastPrayerDate === yesterday || stats.lastPrayerDate === today) {
+      stats.streak = (stats.lastPrayerDate === today) ? stats.streak : stats.streak + 1;
+    } else {
+      stats.streak = 1;
+    }
+    stats.lastPrayerDate = today;
+    
+    saveStats(stats);
+    updateStatsUI();
+  }
+}
+
+function recordAdhkar(count = 1) {
+  if (!state.statsEnabled) return;
+  const stats = getStats();
+  const today = new Date().toISOString().split('T')[0];
+  
+  if (!stats.dailyStats[today]) stats.dailyStats[today] = { prayers: 0, adhkar: 0, completed: [] };
+  stats.dailyStats[today].adhkar += count;
+  stats.totalAdhkar += count;
+  saveStats(stats);
+  updateStatsUI();
+}
+
+function updateStatsUI() {
+  const stats = getStats();
+  $('statPrayers')?.textContent = stats.totalPrayers;
+  $('statAdhkar')?.textContent = stats.totalAdhkar;
+  $('statStreak')?.textContent = stats.streak;
+  
+  // تحديث بطاقات الصلوات
+  PRAYERS_ORDER.filter(k => k !== 'sunrise').forEach(k => {
+    const el = $(`stat-${k}`);
+    if (el) el.textContent = stats.completedPrayers[k] || 0;
+  });
+}
+
+function createStatsView() {
+  const stats = getStats();
+  return `
+    <div class="card stats-card">
+      <h3>📊 إحصائياتك</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="statPrayers">${stats.totalPrayers}</div>
+          <div class="stat-label">صلاة تمت</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statAdhkar">${stats.totalAdhkar}</div>
+          <div class="stat-label">ذكر مقروء</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statStreak">${stats.streak}</div>
+          <div class="stat-label">أيام متتالية</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">${Object.keys(stats.dailyStats).length}</div>
+          <div class="stat-label">أيام نشطة</div>
+        </div>
+      </div>
+      
+      <h4 style="margin-top:16px;color:var(--gold)">الصلوات المكتملة</h4>
+      <div class="prayer-stats">
+        ${PRAYERS_ORDER.filter(k => k !== 'sunrise').map(k => `
+          <div class="prayer-stat">
+            <span class="prayer-stat-name">${PRAYER_LABELS[k]}</span>
+            <span class="prayer-stat-count" id="stat-${k}">${stats.completedPrayers[k] || 0}</span>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="stats-actions" style="margin-top:16px;display:flex;gap:10px">
+        <button class="btn-ghost" onclick="exportData()">📤 تصدير البيانات</button>
+        <button class="btn-ghost" onclick="importData()">📥 استيراد</button>
+        <button class="btn-ghost" onclick="clearAllData()">🗑️ مسح الكل</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- النسخ الاحتياطي والاستيراد ---------- */
+function exportData() {
+  const data = {
+    version: 2,
+    timestamp: new Date().toISOString(),
+    state: state,
+    stats: getStats(),
+    doneToday: state.doneToday
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mawaqit-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('تم تصدير النسخة الاحتياطية');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.state) {
+          state = { ...DEFAULTS, ...state, ...data.state };
+          saveState();
+        }
+        if (data.stats) saveStats(data.stats);
+        if (data.doneToday) {
+          state.doneToday = data.doneToday;
+          saveState();
+        }
+        location.reload();
+        showToast('تم استيراد البيانات بنجاح');
+      } catch (err) {
+        showToast('خطأ في الملف: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function clearAllData() {
+  if (confirm('هل أنت متأكد؟ سيتم حذف جميع البيانات (الإعدادات، التقدم، الإحصائيات)')) {
+    localStorage.removeItem('mawaqit_reminders_v2');
+    localStorage.removeItem('mawaqit_stats');
+    localStorage.removeItem('mawaqit_scroll');
+    showToast('تم مسح جميع البيانات');
+    setTimeout(() => location.reload(), 1000);
+  }
+}
+
+/* ---------- المشاركة ---------- */
+async function sharePrayerTime(prayerKey) {
+  const city = CITIES[state.cityKey] || WORLD_CITIES[state.cityKey];
+  if (!city) return;
+  
+  const now = new Date();
+  const times = prayerTimes(city.lat, city.lng, city.tz, now, state.fajrAngle, state.ishaAngle, state.asrFactor);
+  const timeStr = timeToStr(times[prayerKey]);
+  const label = PRAYER_LABELS[prayerKey];
+  
+  const text = `🕌 وقت ${label} في ${city.name}: ${timeStr}\n\nتطبيق "تذكّر" للأذكار والمواقيت\nhttps://steverlaabs.github.io/mawaqit-pwa/`;
+  
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: `وقت ${label}`, text });
+    } catch (e) { /* المستخدم ألغى */ }
+  } else {
+    // نسخ للحافظة
+    await navigator.clipboard.writeText(text);
+    showToast('تم نسخ وقت الصلاة للمشاركة');
+  }
+}
+
+async function shareApp() {
+  const text = `🕌 تطبيق "تذكّر" - مواقيت الصلاة والأذكار\n\n✅ يعمل بدون إنترنت\n🔔 تنبيهات صلاة مع أذان حقيقي\n🧭 بوصلة القبلة\n📊 إحصائيات متابعة\n🌙 تقويم هجري دقيق\n\nجربه الآن: https://steverlaabs.github.io/mawaqit-pwa/`;
+  
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'تطبيق تذكّر', text });
+    } catch (e) {}
+  } else {
+    await navigator.clipboard.writeText(text);
+    showToast('تم نسخ رابط التطبيق للمشاركة');
+  }
+}
+
+/* ---------- تحديث loadState للإحصائيات ---------- */
+const originalLoadState = loadState;
+loadState = function() {
+  originalLoadState();
+  // تحميل الإحصائيات
+  const stats = getStats();
+  updateStatsUI();
+  
+  // تحميل المدن العالمية في القائمة
+  const citySelect = $('settingCity');
+  if (citySelect) {
+    const allCities = { ...CITIES, ...WORLD_CITIES };
+    citySelect.innerHTML = Object.entries(allCities).map(([k, v]) => 
+      `<option value="${k}" ${k === state.cityKey ? 'selected' : ''}>${v.name}${v.fajrAngle ? ` (فجر ${v.fajrAngle}°)` : ''}</option>`
+    ).join('');
+    citySelect.value = state.cityKey;
+  }
+};
+
+/* ---------- تحديث bindSettings للإضافات ---------- */
+const originalBindSettings = bindSettings;
+bindSettings = function() {
+  originalBindSettings();
+  
+  // زر القبلة
+  const qiblaBtn = document.createElement('button');
+  qiblaBtn.className = 'btn-primary';
+  qiblaBtn.style.marginTop = '12px';
+  qiblaBtn.innerHTML = '🧭 فتح بوصلة القبلة';
+  qiblaBtn.onclick = startQiblaCompass;
+  $('saveSettings')?.parentNode?.insertBefore(qiblaBtn, $('saveSettings').nextSibling);
+  
+  // زر المشاركة
+  const shareBtn = document.createElement('button');
+  shareBtn.className = 'btn-ghost';
+  shareBtn.style.marginTop = '8px';
+  shareBtn.innerHTML = '📤 مشاركة التطبيق';
+  shareBtn.onclick = shareApp;
+  qiblaBtn.parentNode?.insertBefore(shareBtn, qiblaBtn.nextSibling);
+};
+
+/* ---------- إضافة تبويب الإحصائيات ---------- */
+function addStatsTab() {
+  const tabbar = document.querySelector('.tabbar');
+  if (!tabbar || $('tab-stats')) return;
+  
+  // زر التبويب
+  const statsTab = document.createElement('button');
+  statsTab.className = 'tab';
+  statsTab.id = 'tab-stats';
+  statsTab.dataset.view = 'stats';
+  statsTab.setAttribute('aria-label', 'الإحصائيات');
+  statsTab.innerHTML = `
+    <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span>
+    <span>إحصائيات</span>
+  `;
+  
+  // تبويب الإحصائيات في الشريط (نقل الإعدادات لليسار)
+  const tabs = Array.from(tabbar.querySelectorAll('.tab'));
+  const settingsTab = tabs.find(t => t.dataset.view === 'settings');
+  if (settingsTab) {
+    tabbar.insertBefore(statsTab, settingsTab);
+  }
+  
+  // محتوى التبويب
+  const main = document.querySelector('main');
+  const statsView = document.createElement('section');
+  statsView.className = 'view';
+  statsView.id = 'view-stats';
+  statsView.innerHTML = createStatsView();
+  main.appendChild(statsView);
+  
+  // ربط التبويب
+  statsTab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    statsTab.classList.add('active');
+    statsView.classList.add('active');
+    updateStatsUI();
+    hapticFeedback();
+  });
+}
+
+/* ---------- تحديث دالة init ---------- */
+const originalInit = init;
+init = async function() {
+  await originalInit();
+  addStatsTab();
+};
+
+// دالة مساعدة للأذان عند اكتمال الصلاة
+function onPrayerCompleted(prayerKey) {
+  recordPrayer(prayerKey);
+}
+
+// تحديث دالة toggleDone لتسجيل الأذكار
+const originalToggleDone = toggleDone;
+toggleDone = function(key, id) {
+  originalToggleDone(key, id);
+  const done = loadDone(key);
+  if (done.has(id)) {
+    recordAdhkar(1);
+  }
+};
 
 init();

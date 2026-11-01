@@ -437,3 +437,125 @@ body.pwa-standalone .phone { border-radius: 0; }
   main { padding: 0; }
   .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
 }
+
+/* ===== Qibla Compass Modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  opacity: 0; visibility: hidden; transform: translateY(20px);
+  transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.modal-overlay:not(.show) { pointer-events: none; }
+
+.modal {
+  width: 100%; max-width: 420px;
+  background: linear-gradient(165deg, var(--bg1), var(--bg2));
+  border: 1px solid rgba(217,180,90,.2);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 24px 30px;
+  box-shadow: 0 -20px 60px rgba(0,0,0,.5);
+  animation: slideUpModal .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes slideUpModal { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+
+.modal-handle {
+  width: 40px; height: 5px; background: rgba(255,255,255,.15); border-radius: 3px;
+  margin: 0 auto 16px; border-radius: 3px;
+}
+
+.qibla-modal h3 {
+  font-family: "Amiri", serif; color: var(--gold); font-size: 20px;
+  text-align: center; margin-bottom: 6px;
+}
+.qibla-city { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+.qibla-angle { text-align: center; color: var(--gold); font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+
+.compass-container { position: relative; }
+.compass {
+  width: 260px; height: 260px; margin: 0 auto 20px; position: relative;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.05), transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(217,180,90,.08), transparent 50%),
+              var(--bg1);
+  border: 2px solid rgba(217,180,90,.3);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.5), 0 0 30px rgba(217,180,90,.1);
+}
+.compass-ring {
+  position: absolute; inset: 8px; border-radius: 50%;
+  border: 1px solid rgba(217,180,90,.2);
+}
+.compass-marks { position: absolute; inset: 0; }
+.compass-marks .mark {
+  position: absolute; top: 12px; left: 50%; transform-origin: 50% 118px; width: 1px; height: 18px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  opacity: 0.6;
+}
+.compass-marks .mark span {
+  position: absolute; top: 22px; left: -18px; width: 36px; text-align: center;
+  font-size: 10px; color: var(--muted); font-weight: 600; transform: rotate(calc(-1 * var(--r, 0deg)));
+}
+.compass-needle {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%) rotate(0deg);
+  width: 3px; height: 110px; background: linear-gradient(to bottom, #ff4444, #cc0000);
+  border-radius: 2px; transform-origin: 50% 100%;
+  box-shadow: 0 0 8px #ff4444; z-index: 10; transition: transform .1s linear;
+}
+.compass-needle::before {
+  content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
+  border-top: 12px solid #ff4444;
+}
+.qibla-indicator {
+  position: absolute; top: 50%; left: 50%; transform-origin: 50% 118px; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  color: var(--gold); font-size: 11px; font-weight: 700; text-shadow: 0 0 8px rgba(217,180,90,.8);
+  white-space: nowrap; transition: transform .1s linear;
+}
+.qibla-indicator svg { filter: drop-shadow(0 0 6px rgba(217,180,90,.8)); }
+.compass-center {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 16px; height: 16px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
+  box-shadow: 0 0 10px rgba(217,180,90,.8); z-index: 15;
+}
+
+.compass-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.info-row { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px; background: rgba(255,255,255,.03); border-radius: 12px; border: 1px solid rgba(255,255,255,.05); }
+.info-row span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.info-row strong { font-size: 18px; font-variant-numeric: tabular-nums; color: var(--white); }
+.info-row.diff strong { font-size: 20px; }
+
+/* ===== Statistics View ===== */
+.stats-card { margin-bottom: 16px; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
+.stat-item { text-align: center; padding: 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); border-radius: 16px; transition: all .2s; }
+.stat-item:hover { border-color: rgba(217,180,90,.3); background: rgba(217,180,90,.05); }
+.stat-value { font-size: 36px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; line-height: 1; font-family: "Cairo", monospace; }
+.stat-label { font-size: 12px; color: var(--muted); margin-top: 6px; text-transform: uppercase; letter-spacing: .5px; }
+
+.prayer-stats { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.prayer-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; transition: all .2s; }
+.prayer-stat:hover { border-color: rgba(217,180,90,.3); background: rgba(217,180,90,.05); }
+.prayer-stat-name { color: var(--white); font-weight: 600; }
+.prayer-stat-count { font-size: 18px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+.stats-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.stats-actions button { flex: 1; min-width: 100px; }
+
+/* ===== Tabbar with 5 tabs ===== */
+.tabbar { grid-template-columns: repeat(5, 1fr); }
+.tabbar .tab span { font-size: 10px; }
+
+/* ===== File Input for Import ===== */
+input[type="file"] { display: none; }
+
+/* ===== Landscape adjustments for compass ===== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .compass { width: 200px; height: 200px; }
+  .compass-needle { height: 85px; transform-origin: 50% 85px; }
+  .compass-marks .mark { transform-origin: 50% 88px; top: 12px; height: 14px; }
+  .qibla-indicator { transform-origin: 50% 88px; }
+}
