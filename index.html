@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#03131b" />
 <title>تذكّر — الأذكار والمواقيت</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕌</text></svg>" />
+<link rel="icon" href="icons/icon.svg" />
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#03131b" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="تذكّر" />
 <link rel="apple-touch-icon" href="icons/icon-192.png" />
-<link rel="stylesheet" href="style.css?v=1" />
+<link rel="stylesheet" href="style.css?v=2" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet" />
@@ -29,7 +29,7 @@
 
     <header>
       <div class="brand">
-        <div class="logo" aria-hidden="true">🕌</div>
+        <div class="logo" aria-hidden="true"><svg viewBox="0 0 32 32" width="32" height="32"><circle cx="16" cy="16" r="16" fill="#03131b"/><path d="M16 4c-6.6 0-12 5.4-12 12 0 3.5 1.5 6.7 4 9l4 6 4-6c2.5-2.3 4-5.5 4-9 0-6.6-5.4-12-12-12zm0 2c5.5 0 10 4.5 10 10 0 2.8-1 5.4-2.8 7.3l-3.2 4.8-3.2-4.8C7 19.4 6 16.8 6 14c0-5.5 4.5-10 10-10z" fill="#d9b45a"/></svg></div>
         <div class="brand-txt">
           <h1>تذكّر</h1>
           <p>مواقيت الصلاة وأذكار اليوم</p>
@@ -43,14 +43,22 @@
     </header>
 
     <main>
+      <!-- الرئيسية: الصلاة القادمة + بطاقات الصلوات + أذكار ما بعد الصلاة -->
       <section class="view active" id="view-home">
         <div class="card next-card">
           <p class="label">الصلاة القادمة</p>
           <h2 id="nextName">—</h2>
           <div class="countdown" id="countdown">--:--:--</div>
           <p id="nextTime" class="at">—</p>
-          <p class="hint">الأذكار ما بعد الصلاة تبدأ فور دخول وقت الصلاة القادمة</p>
+          <p class="hint">الأذكار ما بعد الصلاة تظهر تلقائياً عند دخول الوقت</p>
         </div>
+
+        <!-- بطاقات الصلوات الخمس -->
+        <div class="card">
+          <p class="label">مواقيت اليوم</p>
+          <div id="prayerCards" class="prayer-cards-grid"></div>
+        </div>
+
         <div class="card adhkar-card" id="adhkarCard">
           <p class="label">أذكار ما بعد الصلاة</p>
           <ul class="adhkar-list" id="postList"></ul>
@@ -61,17 +69,31 @@
         </div>
       </section>
 
+      <!-- أذكار الصباح -->
       <section class="view" id="view-morning">
         <div class="card">
           <p class="label">أذكار الصباح</p>
           <ul class="adhkar-list" id="morningList"></ul>
           <div class="progress-row">
-            <span id="morningProgress">0 / 7</span>
+            <span id="morningProgress">0 / 8</span>
             <button class="btn-ghost" id="resetMorning">إعادة تعيين</button>
           </div>
         </div>
       </section>
 
+      <!-- أذكار المساء -->
+      <section class="view" id="view-evening">
+        <div class="card">
+          <p class="label">أذكار المساء</p>
+          <ul class="adhkar-list" id="eveningList"></ul>
+          <div class="progress-row">
+            <span id="eveningProgress">0 / 7</span>
+            <button class="btn-ghost" id="resetEvening">إعادة تعيين</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- أذكار يومية -->
       <section class="view" id="view-daily">
         <div class="card">
           <p class="label">أذكار يومية (تسبيح واستغفار)</p>
@@ -83,37 +105,54 @@
         </div>
       </section>
 
+      <!-- الإعدادات المحسنة -->
       <section class="view" id="view-settings">
         <div class="card">
-          <h3>الإعدادات</h3>
+          <h3>🔊 الصوت والأذان</h3>
           <label class="toggle">
             <input type="checkbox" id="settingSound" />
             <span class="slider"></span>
-            <span>صوت التنبيه عند الصلاة</span>
+            <span>تفعيل صوت الأذان والتنبيهات</span>
           </label>
           <label class="toggle">
             <input type="checkbox" id="settingVibrate" />
             <span class="slider"></span>
-            <span>اهتزاز الهاتف</span>
+            <span>اهتزاز الهاتف عند الصلاة</span>
           </label>
+          <div class="setting-row">
+            <span>مستوى صوت الأذان</span>
+            <input type="range" id="settingAdhanVolume" min="0" max="1" step="0.1" value="0.7" style="flex:1;accent-color:var(--gold)">
+          </div>
+          <div class="setting-row">
+            <span>نوع أذان الفجر</span>
+            <select id="settingFajrAdhan" style="flex:1">
+              <option value="mecca">أذان مكة المكرمة</option>
+              <option value="medina">أذان المدينة المنورة</option>
+              <option value="egypt">أذان مصري</option>
+              <option value="local">أذان محلي</option>
+            </select>
+          </div>
+
+          <h3 style="margin-top:20px">🌙 التواريخ</h3>
           <label class="toggle">
             <input type="checkbox" id="settingHijriAdj" />
             <span class="slider"></span>
             <span>تصحيح التاريخ الهجري ±1 يوم</span>
           </label>
+
+          <h3 style="margin-top:20px">📍 الموقع</h3>
           <div class="setting-row">
-            <span>موقع المدينة</span>
-            <select id="settingCity">
-              <option value="alger">الجزائر العاصمة</option>
-              <option value="oran">وهران</option>
-              <option value="constantine">قسنطينة</option>
-              <option value="annaba">عنابة</option>
-              <option value="blida">البليدة</option>
-              <option value="setif">سطيف</option>
-              <option value="tizi">تيزي وزو</option>
-              <option value="other">أخرى (يدوي)</option>
-            </select>
+            <span>المدينة</span>
+            <select id="settingCity" style="flex:1"></select>
           </div>
+
+          <h3 style="margin-top:20px">📱 سلوك التطبيق</h3>
+          <label class="toggle">
+            <input type="checkbox" id="settingKeepScreen" />
+            <span class="slider"></span>
+            <span>إبقاء الشاشة مضاءة أثناء الأذان</span>
+          </label>
+
           <button class="btn-primary" id="saveSettings">حفظ الإعدادات</button>
         </div>
       </section>
@@ -121,34 +160,56 @@
 
     <nav class="tabbar">
       <button class="tab active" data-view="home" aria-label="الرئيسية">
-        <span class="icon">🏠</span>
+        <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
         <span>الرئيسية</span>
       </button>
       <button class="tab" data-view="morning" aria-label="أذكار الصباح">
-        <span class="icon">🌅</span>
+        <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M6.76 4.84l-1.8 1.79 5 5.01-5 5.01 1.79 1.79 6.75-6.75z"/></svg></span>
         <span>الصباح</span>
       </button>
+      <button class="tab" data-view="evening" aria-label="أذكار المساء">
+        <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg></span>
+        <span>المساء</span>
+      </button>
       <button class="tab" data-view="daily" aria-label="أذكار يومية">
-        <span class="icon">📿</span>
+        <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></span>
         <span>يومية</span>
       </button>
       <button class="tab" data-view="settings" aria-label="الإعدادات">
-        <span class="icon">⚙️</span>
+        <span class="icon"><svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.07.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></span>
         <span>إعدادات</span>
       </button>
     </nav>
   </div>
 </div>
 
-<script src="script.js?v=1"></script>
+<!-- Splash Screen for PWA -->
+<div id="splashScreen" class="splash-screen" aria-hidden="true">
+  <svg viewBox="0 0 200 200" width="120" height="120" class="splash-logo">
+    <circle cx="100" cy="100" r="100" fill="#03131b"/>
+    <path d="M100 25c-41.4 0-75 33.6-75 75 0 22.1 9.5 42.3 25 57l15 22 15-22c15.5-14.7 25-34.9 25-57 0-41.4-33.6-75-75-75zm0 10c30.3 0 55 24.7 55 55 0 15.6-5.7 29.9-15.3 40.8l-12.4 18.6-12.4-18.6C50.7 106.9 45 92.6 45 77c0-30.3 24.7-55 55-55z" fill="#d9b45a"/>
+    <text x="100" y="155" text-anchor="middle" font-family="Amiri, serif" font-size="28" font-weight="700" fill="#d9b45a">تذكّر</text>
+  </svg>
+  <div class="splash-loader"><div class="spinner"></div></div>
+</div>
+
+<script src="script.js?v=2"></script>
 <script>
+  // Splash Screen Handler
+  window.addEventListener('load', () => {
+    const splash = document.getElementById('splashScreen');
+    setTimeout(() => {
+      splash.classList.add('hidden');
+      setTimeout(() => splash.remove(), 500);
+    }, 800);
+  });
+
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
         .then(reg => {
           console.log('SW registered:', reg.scope);
-          // Check for updates periodically
           setInterval(() => reg.update(), 60 * 60 * 1000);
         })
         .catch(err => console.log('SW registration failed:', err));
@@ -173,7 +234,7 @@
           <span style="font-size:24px">📲</span>
           <div>
             <strong style="font-size:14px">تثبيت التطبيق</strong>
-            <div style="font-size:12px;opacity:.8">يعمل بدون إنترنت، تنبيهات الصلاة في الخلفية</div>
+            <div style="font-size:12px;opacity:.8">يعمل بدون إنترنت، تنبيهات الصلاة في الخلفية، أذان حقيقي</div>
           </div>
         </div>
         <div style="display:flex;gap:8px">

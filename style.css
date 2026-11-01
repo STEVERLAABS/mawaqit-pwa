@@ -279,3 +279,161 @@ body.pwa-standalone .statusbar {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Prayer Cards Grid ===== */
+.prayer-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.prayer-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  transition: all .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.prayer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.prayer-card.upcoming { border-color: rgba(217,180,90,.2); }
+.prayer-card.upcoming::before { opacity: 1; }
+
+.prayer-card.current {
+  border-color: var(--gold);
+  background: rgba(217,180,90,.1);
+  animation: pulseGold 1.5s infinite;
+}
+.prayer-card.current::before { opacity: 1; }
+
+.prayer-card.passed {
+  border-color: rgba(155,227,200,.3);
+  background: rgba(155,227,200,.05);
+  opacity: 0.7;
+}
+
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217,180,90,.4); }
+  50% { box-shadow: 0 0 0 8px rgba(217,180,90,0); }
+}
+
+.prayer-icon { font-size: 28px; line-height: 1; }
+.prayer-name { font-family: "Amiri", serif; font-size: 16px; color: var(--gold); font-weight: 700; }
+.prayer-time { font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 700; color: var(--white); }
+.prayer-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,.05); }
+.prayer-card.upcoming .prayer-status { color: var(--mint); background: rgba(155,227,200,.15); }
+.prayer-card.current .prayer-status { color: var(--gold); background: rgba(217,180,90,.2); animation: blink 1s infinite; }
+.prayer-card.passed .prayer-status { color: var(--muted); }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ===== Counter in Adhkar ===== */
+.counter { display: flex; align-items: center; gap: 6px; margin-right: 8px; }
+.cnt-btn {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(217,180,90,.2); border: 1px solid rgba(217,180,90,.3);
+  color: var(--gold); font-size: 16px; font-weight: 700; cursor: pointer;
+  transition: all .1s; display: flex; align-items: center; justify-content: center;
+}
+.cnt-btn:hover { background: var(--gold); color: #03131b; }
+.cnt-btn:active { transform: scale(0.9); }
+.cnt-val { min-width: 28px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--white); }
+
+/* ===== Splash Screen ===== */
+.splash-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(160deg, var(--bg1), var(--bg2));
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 24px; transition: opacity .5s ease, visibility .5s ease;
+}
+.splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-logo { filter: drop-shadow(0 0 30px rgba(217,180,90,.4)); animation: float 2s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.splash-loader { display: flex; gap: 6px; }
+.spinner {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gold);
+  animation: bounce 0.6s ease-in-out infinite;
+}
+.spinner:nth-child(2) { animation-delay: 0.15s; }
+.spinner:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+/* ===== Holy Month Indicator ===== */
+#holyMonthIndicator { animation: slideDown .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ===== Toast ===== */
+#toast { animation: slideUpToast .3s ease; }
+@keyframes slideUpToast { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ===== Input Range Styling ===== */
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  background: rgba(255,255,255,.1); height: 6px; border-radius: 3px; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--gold); cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  transition: transform .1s, box-shadow .2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); box-shadow: 0 4px 12px rgba(217,180,90,.5); }
+input[type="range"]::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%; border: none;
+  background: var(--gold); cursor: pointer;
+}
+
+/* ===== Select Styling ===== */
+select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d9b45a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 12px center; padding-left: 36px; }
+
+/* ===== Native App Feel: Touch Feedback ===== */
+.touch-feedback { position: relative; overflow: hidden; }
+.touch-feedback::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  width: 0; height: 0; border-radius: 50%;
+  background: rgba(217,180,90,.3); transform: translate(-50%, -50%);
+  opacity: 0; pointer-events: none;
+}
+.touch-feedback:active::after {
+  animation: ripple 0.4s ease-out;
+}
+@keyframes ripple { to { width: 200px; height: 200px; opacity: 0; } }
+
+/* ===== Safe Area Insets for notched phones ===== */
+@supports (padding: max(0px)) {
+  .stage { padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
+  .phone { border-radius: max(54px, env(safe-area-inset-top) + 20px); }
+}
+body.pwa-standalone .phone { border-radius: 0; }
+
+/* ===== High Contrast Mode ===== */
+@media (prefers-contrast: high) {
+  :root { --card: rgba(255,255,255,.1); --muted: #ccc; }
+  .card { border-width: 2px; }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  .stage, .phone, .tabbar, .notch, .statusbar { display: none !important; }
+  body { background: white; color: black; overflow: visible; }
+  main { padding: 0; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+}

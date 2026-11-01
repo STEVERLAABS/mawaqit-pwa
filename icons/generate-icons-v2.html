@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>توليد أيقونات PWA احترافية</title>
+<style>
+  body { font-family: Cairo, sans-serif; padding: 20px; background: #03131b; color: #f4f1e7; direction: rtl; min-height: 100vh; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { color: #d9b45a; text-align: center; margin-bottom: 10px; font-family: Amiri, serif; }
+  .subtitle { text-align: center; color: #9fb3ab; margin-bottom: 30px; }
+  .sizes { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin: 20px 0; }
+  .size-box { background: rgba(255,255,255,.03); border: 1px solid rgba(217,180,90,.2); border-radius: 16px; padding: 20px; text-align: center; transition: all .2s; }
+  .size-box:hover { border-color: #d9b45a; box-shadow: 0 0 20px rgba(217,180,90,.2); }
+  .size-box canvas { border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,.3); max-width: 100%; background: #03131b; }
+  .size-box label { display: block; margin-top: 12px; font-weight: 600; color: #d9b45a; font-size: 14px; }
+  .btn-group { display: flex; gap: 15px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+  button { padding: 14px 28px; background: linear-gradient(135deg, #d9b45a, #b08c3f); color: #03131b; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; font-family: inherit; }
+  button:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(217,180,90,.4); }
+  button:active { transform: translateY(0); }
+  button.secondary { background: transparent; color: #d9b45a; border: 2px solid #d9b45a; }
+  button.secondary:hover { background: rgba(217,180,90,.1); }
+  .log { background: rgba(0,0,0,.3); border: 1px solid rgba(217,180,90,.2); border-radius: 12px; padding: 20px; font-family: monospace; font-size: 13px; max-height: 300px; overflow: auto; color: #9be3c8; }
+  .log .success { color: #9be3c8; }
+  .log .error { color: #ff6b6b; }
+  .log .info { color: #d9b45a; }
+  .preview-all { margin-top: 20px; }
+  .preview-all h3 { color: #d9b45a; margin-bottom: 15px; }
+  .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
+  .preview-item { text-align: center; }
+  .preview-item img { border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,.3); width: 100%; }
+  .preview-item span { display: block; margin-top: 6px; font-size: 11px; color: #9fb3ab; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🕌 توليد أيقونات PWA احترافية</h1>
+  <p class="subtitle">أيقونة مسجد مع كلمة "ذكر" بتصميم ذهبي على خلفية داكنة — جميع الأحجام المطلوبة</p>
+  
+  <div class="sizes" id="sizes"></div>
+  
+  <div class="btn-group">
+    <button onclick="generateAll()">✨ توليد وتحميل جميع الأيقونات</button>
+    <button class="secondary" onclick="previewOnly()">👁️ معاينة فقط</button>
+    <button class="secondary" onclick="downloadZip()">📦 تحميل كملف ZIP</button>
+  </div>
+  
+  <div class="preview-all" id="previewSection" style="display:none">
+    <h3>معاينة الأيقونات المولدة</h3>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+  
+  <div class="log" id="log"></div>
+</div>
+
+<script>
+// الأيقونة SVG الاحترافية - مسجد مع "ذكر"
+const ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- خلفية دائرية داكنة -->
+  <circle cx="256" cy="256" r="256" fill="#03131b"/>
+  <!-- حلقة ذهبية خارجية -->
+  <circle cx="256" cy="256" r="248" fill="none" stroke="#d9b45a" stroke-width="4" opacity="0.4"/>
+  <!-- تدرج داخلي خفيف -->
+  <defs>
+    <radialGradient id="domeGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#e8c56d"/>
+      <stop offset="100%" stop-color="#b08c3f"/>
+    </radialGradient>
+    <radialGradient id="minaretGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d9b45a"/>
+      <stop offset="100%" stop-color="#9d7b2e"/>
+    </radialGradient>
+  </defs>
+  <!-- المئذنة اليمنى -->
+  <path d="M380 180 L380 80 Q396 60 412 80 L412 180 Z" fill="url(#minaretGrad)"/>
+  <rect x="388" y="80" width="16" height="100" rx="2" fill="url(#minaretGrad)"/>
+  <!-- المئذنة اليسرى -->
+  <path d="M132 180 L132 80 Q116 60 100 80 L100 180 Z" fill="url(#minaretGrad)"/>
+  <rect x="108" y="80" width="16" height="100" rx="2" fill="url(#minaretGrad)"/>
+  <!-- القبة الرئيسية -->
+  <ellipse cx="256" cy="190" rx="90" ry="70" fill="url(#domeGrad)"/>
+  <path d="M166 190 Q166 120 256 120 Q346 120 346 190 Z" fill="#b08c3f"/>
+  <!-- هلال على القبة -->
+  <path d="M220 140 Q256 105 292 140 Q256 120 220 140" fill="#03131b"/>
+  <!-- قوس الزخرفة -->
+  <path d="M190 230 Q256 300 322 230 L322 250 Q256 315 190 250 Z" fill="#07312a"/>
+  <circle cx="256" cy="250" r="22" fill="#03131b"/>
+  <!-- القاعدة السفلية -->
+  <rect x="70" y="390" width="372" height="50" rx="10" fill="#07312a"/>
+  <!-- خط ذهبي على القاعدة -->
+  <rect x="70" y="390" width="372" height="3" fill="#d9b45a" opacity="0.5"/>
+  <!-- نص "ذكر" بخط عربي جميل -->
+  <text x="256" y="465" text-anchor="middle" font-family="Amiri, 'Traditional Arabic', serif" font-size="60" font-weight="700" fill="#d9b45a" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.5))">ذكر</text>
+  <!-- نقاط زخرفية -->
+  <circle cx="180" cy="465" r="4" fill="#d9b45a" opacity="0.7"/>
+  <circle cx="332" cy="465" r="4" fill="#d9b45a" opacity="0.7"/>
+</svg>`;
+
+const SIZES = [
+  { size: 72, name: '72×72 (Android legacy)' },
+  { size: 96, name: '96×96 (Android legacy)' },
+  { size: 128, name: '128×128 (Chrome Web Store)' },
+  { size: 144, name: '144×144 (Windows Tile)' },
+  { size: 152, name: '152×152 (iPad Touch)' },
+  { size: 192, name: '192×192 (Android Home)' },
+  { size: 384, name: '384×384 (Splash/Android)' },
+  { size: 512, name: '512×512 (App Store/Splash)' }
+];
+
+const generatedCanvases = {};
+
+function log(msg, type = 'info') {
+  const el = document.getElementById('log');
+  const span = document.createElement('div');
+  span.className = type;
+  span.textContent = msg;
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+function createSizeBoxes() {
+  const container = document.getElementById('sizes');
+  SIZES.forEach(({size, name}) => {
+    const box = document.createElement('div');
+    box.className = 'size-box';
+    box.innerHTML = `<canvas id="canvas-${size}" width="${size}" height="${size}"></canvas><label>${name}</label>`;
+    container.appendChild(box);
+  });
+}
+
+function drawIcon(size) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const canvas = document.getElementById(`canvas-${size}`);
+    const ctx = canvas.getContext('2d');
+    canvas.width = size;
+    canvas.height = size;
+    
+    // تفعيل جودة عالية
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    
+    img.onload = () => {
+      // رسم مع الحفاظ على النسبة
+      ctx.drawImage(img, 0, 0, size, size);
+      generatedCanvases[size] = canvas;
+      resolve(canvas);
+    };
+    img.onerror = reject;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(ICON_SVG);
+  });
+}
+
+function downloadCanvas(canvas, size) {
+  const link = document.createElement('a');
+  link.download = `icon-${size}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function generateAll() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري التوليد...';
+  log('🚀 بدء توليد الأيقونات الاحترافية...', 'info');
+  
+  const previewGrid = document.getElementById('previewGrid');
+  previewGrid.innerHTML = '';
+  document.getElementById('previewSection').style.display = 'block';
+  
+  for (const {size, name} of SIZES) {
+    try {
+      log(`🎨 توليد ${name}...`, 'info');
+      const canvas = await drawIcon(size);
+      downloadCanvas(canvas, size);
+      log(`✅ تم: icon-${size}.png (${size}×${size})`, 'success');
+      
+      // إضافة للمعاينة
+      const item = document.createElement('div');
+      item.className = 'preview-item';
+      item.innerHTML = `<img src="${canvas.toDataURL('image/png')}" alt="${size}"><span>${size}×${size}</span>`;
+      previewGrid.appendChild(item);
+    } catch (e) {
+      log(`❌ خطأ في ${size}: ${e.message}`, 'error');
+    }
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '✅ تم التوليد — تحقق من مجلد التحميلات';
+  log('🎉 اكتمل التوليد! انقل ملفات PNG إلى مجلد icons/', 'success');
+}
+
+function previewOnly() {
+  generateAll();
+}
+
+async function downloadZip() {
+  log('📦 ميزة ZIP تحتاج مكتبة خارجية — استخدم "توليد وتحميل" حالياً', 'info');
+  generateAll();
+}
+
+createSizeBoxes();
+log('👋 مرحباً! اضغط "توليد وتحميل" لإنشاء جميع أيقونات PWA', 'info');
+log('💡 الأيقونة: مسجد ذهبي + كلمة "ذكر" + هلال، مصممة للشاشات العالية الدقة', 'info');
+</script>
+</body>
+</html>

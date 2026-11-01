@@ -4,14 +4,21 @@
    ========================================================= */
 'use strict';
 
-const CACHE_NAME = 'mawaqit-reminders-v3';
+const CACHE_NAME = 'mawaqit-reminders-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/style.css',
-  '/script.js',
+  '/style.css?v=2',
+  '/script.js?v=2',
   '/manifest.json',
+  '/icons/icon.svg',
+  '/icons/icon-72.png',
+  '/icons/icon-96.png',
+  '/icons/icon-128.png',
+  '/icons/icon-144.png',
+  '/icons/icon-152.png',
   '/icons/icon-192.png',
+  '/icons/icon-384.png',
   '/icons/icon-512.png',
   'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap',
   'https://fonts.gstatic.com/s/amiri/v23/J7aRnpd8CGxBHpUrtL8.woff2',
